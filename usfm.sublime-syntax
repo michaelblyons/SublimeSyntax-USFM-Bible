@@ -43,6 +43,7 @@ contexts:
       pop: 1
     - include: paragraphs
     - include: notes
+    - include: characters
 
 ###[ PARAGRAPHS ]##############################################################
 
@@ -86,7 +87,19 @@ contexts:
 ###[ CHARACTERS ]##############################################################
 
   # https://docs.usfm.bible/usfm/3.1/char/index.html
-  characters: []
+  characters:
+    - include: char.name-of-god
+
+  char.name-of-god:
+    - match: \\nd
+      scope: punctuation.definition.placeholder.begin.usfm
+      push: char.name-of-god.body
+
+  char.name-of-god.body:
+    - meta_content_scope: constant.other.placeholder.usfm
+    - match: \\nd\*
+      scope: punctuation.definition.placeholder.end.usfm
+      pop: 1
 
 ###[ NOTES ]###################################################################
 
