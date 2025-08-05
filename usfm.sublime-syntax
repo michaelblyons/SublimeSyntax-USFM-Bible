@@ -112,15 +112,83 @@ contexts:
   note.footnotes:
     - match: \\(f|ef|fe)
       scope: punctuation.definition.annotation.begin.usfm
-      push: footnote-body
+      push: note.footnote-body
 
-  footnote-body:
+  note.footnote-body:
     - meta_scope: markup.info.footnote.usfm
     - match: \\\1\*
       scope: punctuation.definition.annotation.end.usfm
       pop: 1
+    - match: \\fr
+      scope: keyword.other.usfm
+      push: note.origin
+    - match: (?=\\)
+      push: note.footnote-content
 
-  note.cross-references: []
+  note.footnote-content:
+    - meta_content_scope: string.unquoted.usfm
+    - match: (?=\\(fe?|ef)\*)
+      pop: 1
+    - include: note.text
+    - include: note.quote
+    - include: note.cross-reference.content
+
+  note.origin:
+    - match: (?=\\)
+      pop: 1
+    - match: \d+:\d+(-\d+)?
+      scope: entity.name.reference.usfm
+
+  note.text:
+    - match: \\ft
+      scope: keyword.other.usfm
+      push: note.text-content
+
+  note.text-content:
+    - match: (?=\\[fex+])
+      pop: 1
+
+  note.quote:
+    - match: \\fqa?
+      scope: punctuation.definition.string.begin.usfm
+      push: note.quote-body
+
+  note.quote-body:
+    - meta_scope: string.quoted.other.usfm markup.italic.usfm
+    - match: (?=\\f\*)
+      pop: 1
+    - match: \\ft
+      scope: punctuation.definition.string.end.usfm
+      pop: 1
+
+  # https://docs.usfm.bible/usfm/3.1/note/crossref/index.html
+  note.cross-references:
+    - match: \\(x|ex)
+      scope: punctuation.definition.annotation.begin.usfm
+      push: note.cross-reference-body
+
+  note.cross-reference-body:
+    - meta_scope: markup.info.cross-reference.usfm
+    - match: \\\1\*
+      scope: punctuation.definition.annotation.end.usfm
+      pop: 1
+    - include: note.cross-references.content
+
+  note.cross-reference.content:
+    - include: note.cross-references.target
+
+  note.cross-references.target:
+    - match: (\\\+?xt)[ ]
+      scope: punctuation.definition.reference.begin.usfm
+      push: note.cross-references.target-body
+
+  note.cross-references.target-body:
+    - meta_content_scope: entity.name.reference.usfm
+    - match: (,?)(\1\*)
+      captures:
+        1: punctuation.separator.sequence.usfm
+        2: punctuation.definition.reference.end.usfm
+      pop: 1
 
 ###[ MILESTONES ]##############################################################
 
