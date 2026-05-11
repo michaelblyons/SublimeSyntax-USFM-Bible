@@ -1,0 +1,81 @@
+# https://github.com/BenjaminSchaaf/sbnf
+# https://docs.usfm.bible
+
+NAME = `USFM Bible`
+SCOPE = `text.usfm`
+SCOPE_POSTFIX = `usfm`
+EXTENSIONS = `usfm`
+
+main : ~( chapters | paragraphs ) ;
+
+
+###[ CHAPTERS & VERSES ]#######################################################
+
+chapters{meta.toc-list.chapter}
+  : `\c`{keyword.declaration.chapter}
+    integer
+  ;
+
+verse{markup.other.verse}
+  : verse-marker
+    ~(characters)*
+    ~'$\n?'
+  ;
+verse-marker
+  : '\\v([ap]?)'{punctuation.definition.verse.begin, 1:storage.modifier}
+    integer
+  ;
+
+
+###[ PARAGRAPHS ]##############################################################
+
+# https://docs.usfm.bible/usfm/3.1/para/index.html
+paragraphs : titles-and-sections | body-paragraphs;
+
+titles-and-sections : section-1 | section-2 | parallel-references ;
+
+section-1{markup.heading.1}
+  : `\s1`{punctuation.definition.heading.1}
+    '\S[\s\S]*?(?=\s*$)'{entity.name.section}
+    ~'$\n?'{meta.whitespace.newline}
+  ;
+section-2{markup.heading.2}
+  : `\s2`{punctuation.definition.heading.2}
+    '\S[\s\S]*?(?=\s*$)'{entity.name.section}
+    ~'$\n?'{meta.whitespace.newline}
+  ;
+parallel-references{comment.line.reference}
+  : `\r`{keyword.other.reference}
+    ~'$\n?'{meta.whitespace.newline}
+  ;
+
+body-paragraphs : ( paragraph | verse | characters )* ;
+paragraph
+  : '\\p\b'{punctuation.section.block.begin}
+  | `\m` # margin
+  | `\po` # letter opening
+  | `\cls` # letter closing
+  | '\\p(r|c)'{punctuation.section.block.begin, 1:markup.alignment}
+  | '\\pm[ocr]' # embedded paragraph
+  | '\\p(i[1-9])'{punctuation.section.block.begin, 1:markup.indentation}
+  | '\\m(i[1-9])'{punctuation.section.block.begin, 1:markup.indentation}
+  | `\lit` # liturgical note
+  | `\nb` # no break
+  | `\b` # blank line
+  ;
+
+
+###[ CHARACTERS ]##############################################################
+
+# https://docs.usfm.bible/usfm/3.1/char/index.html
+characters : char-name-of-god ;
+
+char-name-of-god{constant.other.placeholder}
+  : `\nd`{punctuation.definition.placholder.begin}
+    ~`\nd*`{punctuation.definition.placholder.end}
+  ;
+
+
+###[ UTILITY ]#################################################################
+
+integer : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
