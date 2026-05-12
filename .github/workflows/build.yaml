@@ -1,5 +1,20 @@
 name: Build
-on: [push, pull_request, workflow_dispatch]
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/build.yaml'
+      - '**.sublime-syntax'
+      - '**/syntax_test_*'
+      - '**.tmPreferences'
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '.github/workflows/build.yaml'
+      - '**.sublime-syntax'
+      - '**/syntax_test_*'
+      - '**.tmPreferences'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -12,6 +27,7 @@ jobs:
           - build: 'latest'
           - build: 'stable'
           - build: 4077  # `version: 2` support
+
     steps:
       - uses: actions/checkout@v6
 
