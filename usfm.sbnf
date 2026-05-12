@@ -44,7 +44,7 @@ parallel-references{comment.line.reference}
     ~newline
   ;
 
-body-paragraphs : ( paragraph | verses | characters | notes )* ;
+body-paragraphs : ( paragraph | poetry | text )* ;
 paragraph
   : '\\p\b'{punctuation.section.block.begin}
   | `\m` # margin
@@ -57,6 +57,20 @@ paragraph
   | `\lit` # liturgical note
   | `\nb` # no break
   | `\b` # blank line
+  ;
+
+# TODO: Move text context
+text : ( verses | characters | notes )* ;
+
+# https://docs.usfm.bible/usfm/3.1.1/para/poetry/index.html
+poetry{markup.quote}
+  : '\\q[1-4rcad]'{punctuation.definition.blockquote}
+    ~text
+    ~newline
+  | '\\qm[1-4]'{punctuation.definition.blockquote}
+    ~text
+    ~newline
+  | `\b`{constant.character.newline}
   ;
 
 
