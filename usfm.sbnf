@@ -13,12 +13,12 @@ main : ~( chapters | paragraphs ) ;
 
 chapters{meta.toc-list.chapter}
   : '\\c([ap]?)'{keyword.declaration.chapter, 1:storage.modifier}
-    integer
+    whole-number
   ;
 
 verses
   : '\\v([ap]?)'{punctuation.definition.verse.begin, 1:storage.modifier}
-    integer
+    whole-number
   ;
 
 
@@ -136,8 +136,9 @@ footnote-text
 
 ###[ UTILITY ]#################################################################
 
-reference : integer `:`{punctuation.separator} integer ( `-` integer )? ;
-integer : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
+reference : whole-number `:`{punctuation.separator} wholenum-or-zero ( `-` whole-number )? ;
+whole-number : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
+wholenum-or-zero : '[0-9]+\b'{meta.number.integer.decimal constant.numeric.value} ;
 
 newline : '$\n?'{meta.whitespace.newline} ;
 
