@@ -1,0 +1,32 @@
+name: Build
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - build: 'latest'
+          - build: 'stable'
+          # We claim support for 3092+, but binary tests do not exist
+          # until 3154, and Ubuntu is missing dependencies until 3181
+          - build: 3181
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install SBNF
+        uses: baptiste0928/cargo-install@v3.4.0
+        with:
+          crate: sbnfc
+
+      - name: Compile syntax file
+        run: sbnf usfm.sbnf
+
+      - name: Run syntax tests (${{ matrix.build }})
+        uses: SublimeText/syntax-test-action@v2
+        with:
+          build: ${{ matrix.build }}
+          package_name: 'USFM Bible'
