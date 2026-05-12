@@ -19,15 +19,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - build: 'latest'
-          - build: 'stable'
-          - build: 4077  # `version: 2` support
-
     steps:
       - uses: actions/checkout@v6
 
@@ -39,18 +30,46 @@ jobs:
       - name: Compile syntax file
         run: sbnf usfm.sbnf
 
+      - name: Save syntax file
+        uses: actions/upload-artifact@v7
+        with:
+          name: 'syntaxes.zip'
+          path: '*.sublime-syntax'
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Create ST package
+        run: zip 'USFM Bible.sublime-package' *.md *.tmPreferences *.sublime-syntax
+
+      - name: Upload ST package
+        uses: actions/upload-artifact@v7
+        with:
+          path: 'USFM Bible.sublime-package'
+          archive: false
+          if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - build: 'latest'
+          - build: 'stable'
+          - build: 4077  # `version: 2` support
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: 'syntaxes.zip'
+      - run: ls -R
+
       - name: Run syntax tests (${{ matrix.build }})
         uses: SublimeText/syntax-test-action@v2
         with:
           build: ${{ matrix.build }}
           package_name: 'USFM Bible'
-
-      - name: Create ST package
-        run: zip 'usfm.zip' *.md *.tmPreferences *.sublime-syntax
-
-      - name: Upload ST package
-        uses: actions/upload-artifact@v7
-        with:
-          name: 'USFM Bible-${{ matrix.build }}.sublime-package'
-          path: 'usfm.zip'
-          archive: false
