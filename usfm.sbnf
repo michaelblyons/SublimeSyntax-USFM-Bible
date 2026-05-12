@@ -44,7 +44,7 @@ parallel-references{comment.line.reference}
     ~newline
   ;
 
-body-paragraphs : ( paragraph | poetry | text )* ;
+body-paragraphs : ( paragraph | poetry | list | text )* ;
 paragraph
   : '\\p\b'{punctuation.section.block.begin}
   | `\m` # margin
@@ -72,6 +72,8 @@ poetry{markup.quote}
     ~newline
   | `\b`{constant.character.newline}
   ;
+
+list : '\\lim?[1-4]'{markup.list punctuation.definition.list_item};
 
 
 ###[ CHARACTERS ]##############################################################
