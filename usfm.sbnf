@@ -12,16 +12,11 @@ main : ~( chapters | paragraphs ) ;
 ###[ CHAPTERS & VERSES ]#######################################################
 
 chapters{meta.toc-list.chapter}
-  : `\c`{keyword.declaration.chapter}
+  : '\\c([ap]?)'{keyword.declaration.chapter, 1:storage.modifier}
     integer
   ;
 
-verse{markup.other.verse}
-  : verse-marker
-    ~(characters)*
-    ~'$\n?'
-  ;
-verse-marker
+verses
   : '\\v([ap]?)'{punctuation.definition.verse.begin, 1:storage.modifier}
     integer
   ;
