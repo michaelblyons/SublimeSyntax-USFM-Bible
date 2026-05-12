@@ -56,7 +56,7 @@ paragraph
   | '\\m(i[1-9])'{punctuation.section.block.begin, 1:markup.indentation}
   | `\lit` # liturgical note
   | `\nb` # no break
-  | `\b` # blank line
+  | `\b`{constant.character.newline}
   ;
 
 # TODO: Move text context
