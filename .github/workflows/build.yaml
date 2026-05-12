@@ -44,3 +44,13 @@ jobs:
         with:
           build: ${{ matrix.build }}
           package_name: 'USFM Bible'
+
+      - name: Create ST package
+        run: zip 'usfm.zip' *.md *.tmPreferences *.sublime-syntax
+
+      - name: Upload ST package
+        uses: actions/upload-artifact@v7
+        with:
+          name: 'USFM Bible-${{ matrix.build }}.sublime-package'
+          path: 'usfm.zip'
+          archive: false
