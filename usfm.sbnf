@@ -44,7 +44,7 @@ parallel-references{comment.line.reference}
     ~'$\n?'{meta.whitespace.newline}
   ;
 
-body-paragraphs : ( paragraph | verse | characters )* ;
+body-paragraphs : ( paragraph | verses | characters | notes )* ;
 paragraph
   : '\\p\b'{punctuation.section.block.begin}
   | `\m` # margin
@@ -71,8 +71,58 @@ char-name-of-god{constant.other.placeholder}
   ;
 
 
+###[ NOTES ]###################################################################
+
+# https://docs.usfm.bible/usfm/3.1/note/index.html
+notes : footnote ;
+
+footnote{markup.info.footnote}
+  : '\\f\b'{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`\f*`{punctuation.definition.annotation.end}
+  | '\\ef\b'{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`\ef*`{punctuation.definition.annotation.end}
+  | `\fe`{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`fe`{punctuation.definition.annotation.end}
+  | `\efe`{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`\efe*`{punctuation.definition.annotation.end}
+  ;
+footnote-content
+  : footnote-caller?
+    ( footnote-reference
+    | footnote-translation
+    # | footnote-keyword
+    # | footnote-label
+    # | footnote-witness
+    # | footnote-paragraph
+    # | footnote-verse-number
+    | footnote-text
+    # | footnote-dc
+    # | footnote-refmark
+    )*
+  ;
+footnote-caller : '[?+-]'{storage.modifier} ;
+footnote-reference
+  : `\fr`{keyword.other}
+    reference
+  ;
+footnote-translation
+  : '\\fqa?'{keyword.other}
+    '[^\\]+'{string.unquoted markup.italic.quote}
+  ;
+footnote-text
+  : `\ft`{keyword.other}
+    '[^\\]+'{string.unquoted}
+    ~'(?=\\e?f)'
+  ;
+
+
 ###[ UTILITY ]#################################################################
 
+reference : integer `:`{punctuation.separator} integer ( `-` integer )? ;
 integer : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
 
 book-identifier
