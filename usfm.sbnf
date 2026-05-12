@@ -18,7 +18,7 @@ chapters{meta.toc-list.chapter}
 
 verses
   : '\\v([ap]?)'{punctuation.definition.verse.begin, 1:storage.modifier}
-    whole-number
+    number-or-range
   ;
 
 
@@ -138,7 +138,8 @@ footnote-text
 
 ###[ UTILITY ]#################################################################
 
-reference : whole-number `:`{punctuation.separator} wholenum-or-zero ( `-` whole-number )? ;
+reference : whole-number '[:.]'{punctuation.separator} number-or-range ;
+number-or-range : wholenum-or-zero ( `-`{punctuation.separator.range} whole-number )? ;
 whole-number : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
 wholenum-or-zero : '[0-9]+\b'{meta.number.integer.decimal constant.numeric.value} ;
 
