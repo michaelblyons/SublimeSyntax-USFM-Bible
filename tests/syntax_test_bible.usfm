@@ -1,0 +1,69 @@
+# SYNTAX TEST "Packages/USFM Bible/usfm.sublime-syntax"
+
+
+# https://docs.usfm.bible/usfm/3.1.1/cv/c.html
+\io1 The last week in and near Jerusalem (21.1–27.66)
+\io1 The resurrection and appearances of the Lord (28.1-20)
+\c 1
+#^^^ meta.toc-list.chapter.usfm
+#^ keyword.declaration.chapter.usfm
+#  ^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+\s1 The Ancestors of Jesus Christ
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ markup.heading.1.usfm
+#^^ punctuation.definition.heading.1.usfm
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ entity.name.section.usfm
+#                                ^ meta.whitespace.newline.usfm
+\r (Luke 3.23-38)
+#^^^^^^^^^^^^^^^^^ comment.line.reference.usfm
+#^ keyword.other.reference.usfm
+#                ^ meta.whitespace.newline.usfm
+\p
+\v 1 This is the list of the ancestors of Jesus Christ, a descendant of David,
+#^ punctuation.definition.verse.begin.usfm
+#  ^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+who was a descendant of Abraham.
+
+
+# https://docs.usfm.bible/usfm/3.1.1/para/lists/li.html
+\id NUM
+\c 7
+\p
+\v 84-88 The totals of the offerings brought by the twelve leaders for the
+#^ punctuation.definition.verse.begin.usfm
+#  ^^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+#    ^ punctuation.separator.range.usfm
+#     ^^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+dedication of the altar were as follows:
+\li1 –twelve silver bowls and twelve silver basins weighing a total of 60 pounds
+\li1 –twelve gold dishes weighing a total of 48 ounces, filled with incense
+\li1 –twelve bulls, twelve rams, and twelve one-year-old lambs, plus the grain
+offerings that go with them, for the burnt offerings
+\li1 –twelve goats for the sin offerings
+#^^^ markup.list.usfm punctuation.definition.list_item.usfm
+\li1 –twenty-four bulls, sixty rams, sixty goats, sixty one-year-old lambs, for
+the fellowship offerings
+
+
+# https://docs.usfm.bible/usfm/3.1.1/char/notes/footnote/fq.html
+\p
+\v 1 This is the Good News about Jesus Christ, the Son of God.\f + \fr 1.1:
+#^ punctuation.definition.verse.begin.usfm
+#  ^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+#                                                             ^^^^ markup.info.footnote.usfm
+#                                                             ^^ punctuation.definition.annotation.begin.usfm
+#                                                                ^ storage.modifier.usfm
+#                                                                  ^^^ keyword.other.usfm
+#                                                                      ^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+#                                                                       ^ punctuation.separator.usfm
+#                                                                        ^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
+#                                                                         ^^ markup.info.footnote.usfm
+\ft Some manuscripts do not have \fq the Son of God.\f*
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ markup.info.footnote.usfm
+#                                                   ^^^ punctuation.definition.annotation.end.usfm
+...
+\p
+\v 4 So John appeared in the desert, baptizing and preaching.\f + \fr 1.4:
+\fq John appeared in the desert, baptizing and preaching; \ft some manuscripts
+have \fqa John the Baptist appeared in the desert, preaching.\f* “Turn away
+from your sins and be baptized,” he told the people, “and God will forgive
+your sins.”
