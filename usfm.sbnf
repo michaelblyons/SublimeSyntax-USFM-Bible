@@ -31,12 +31,12 @@ titles-and-sections : section-1 | section-2 | parallel-references ;
 
 section-1{markup.heading.1}
   : `\s1`{punctuation.definition.heading.1}
-    '\S[\s\S]*?(?=\s*$)'{entity.name.section}
+    TEXT_UNTIL_EOL{entity.name.section}
     ~'$\n?'{meta.whitespace.newline}
   ;
 section-2{markup.heading.2}
   : `\s2`{punctuation.definition.heading.2}
-    '\S[\s\S]*?(?=\s*$)'{entity.name.section}
+    TEXT_UNTIL_EOL{entity.name.section}
     ~'$\n?'{meta.whitespace.newline}
   ;
 parallel-references{comment.line.reference}
@@ -74,3 +74,5 @@ char-name-of-god{constant.other.placeholder}
 ###[ UTILITY ]#################################################################
 
 integer : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
+
+TEXT_UNTIL_EOL = '\S[\s\S]*?(?=\s*$)'
