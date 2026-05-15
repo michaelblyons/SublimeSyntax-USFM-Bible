@@ -6,6 +6,7 @@ SCOPE = `text.usfm`
 SCOPE_POSTFIX = `usfm`
 EXTENSIONS = `usfm`
 
+prototype : ( ~comment )* ;
 main : ~( chapters | paragraphs ) ;
 
 
@@ -124,6 +125,7 @@ footnote-caller : '[?+-]'{storage.modifier} ;
 footnote-reference
   : `\fr`{keyword.other}
     reference
+    ':'{punctuation.separator.key-value} ?
   ;
 footnote-translation
   : '\\fqa?'{keyword.other}
@@ -133,6 +135,17 @@ footnote-text
   : `\ft`{keyword.other}
     '[^\\]+'{string.unquoted}
     ~'(?=\\e?f)'
+  ;
+
+
+###[ COMMENTS ]################################################################
+
+# Special-case a User Extension to define comments for unit tests
+
+comment : line-comment ;
+line-comment{comment.line.user-extension}
+  : '^\\z#'{punctuation.definition.comment.begin}
+    ~newline
   ;
 
 
