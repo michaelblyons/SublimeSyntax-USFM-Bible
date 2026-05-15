@@ -85,6 +85,8 @@ characters : char-name-of-god ;
 char-name-of-god{constant.other.placeholder}
   : `\nd`{punctuation.definition.placholder.begin}
     ~`\nd*`{punctuation.definition.placholder.end}
+  | `\+nd`{punctuation.definition.placholder.begin}
+    ~`\+nd*`{punctuation.definition.placholder.end}
   ;
 
 
@@ -129,7 +131,12 @@ footnote-reference
   ;
 footnote-translation
   : '\\fqa?'{keyword.other}
-    '[^\\]+'{string.unquoted markup.italic.quote}
+    footnote-translation-content*
+    ~'(?=\\e?f)'
+  ;
+footnote-translation-content{string.unquoted markup.italic.quote}
+  : characters
+  | '[^\\]+'
   ;
 footnote-text
   : `\ft`{keyword.other}
