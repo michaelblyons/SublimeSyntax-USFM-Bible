@@ -48,7 +48,7 @@ the fellowship offerings
 \p
 \v 1 This is the Good News about Jesus Christ, the Son of God.\f + \fr 1.1:
 \z#^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
-\z#                                                           ^^^^ markup.info.footnote.usfm
+\z#                                                           ^^^^^^^^^^^^^^ markup.info.footnote.usfm
 \z#                                                           ^^ punctuation.definition.annotation.begin.usfm
 \z#                                                              ^ storage.modifier.usfm
 \z#                                                                ^^^ keyword.other.usfm
@@ -57,6 +57,7 @@ the fellowship offerings
 \z#                                                                      ^ meta.number.integer.decimal.usfm constant.numeric.value.usfm
 \z#                                                                       ^ punctuation.separator.key-value.usfm
 \ft Some manuscripts do not have \fq the Son of God.\f*
+\z#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ markup.info.footnote.usfm - markup.info markup.info
 \z# <- keyword.other.usfm
 \z#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.unquoted.usfm
 \z#                              ^^^ keyword.other.usfm

@@ -107,7 +107,7 @@ footnote{markup.info.footnote}
       footnote-content
     ~`\efe*`{punctuation.definition.annotation.end}
   ;
-footnote-content
+footnote-content{markup.info.footnote}
   : footnote-caller?
     ( footnote-reference
     | footnote-translation
