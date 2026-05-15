@@ -34,16 +34,8 @@ jobs:
       - name: Compile syntax file
         run: sbnf usfm.sbnf
 
-      - name: Save syntax file
-        uses: actions/upload-artifact@v7
-        with:
-          name: 'syntaxes.zip'
-          path: '*.sublime-syntax'
-          retention-days: 1
-          if-no-files-found: error
-
       - name: Create ST package
-        run: zip '${{ env.PKG_FILE }}' *.md *.tmPreferences *.sublime-syntax
+        run: zip '${{ env.PKG_FILE }}' *.md *.tmPreferences *.sublime-syntax tests/**
 
       - name: Upload ST package
         uses: actions/upload-artifact@v7
@@ -66,11 +58,10 @@ jobs:
           - build: 4077  # `version: 2` support
 
     steps:
-      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
         with:
-          name: 'syntaxes.zip'
-      - run: ls -R
+          name: ${{ env.PKG_FILE }}
+      - run: unzip '${{ env.PKG_FILE }}'
 
       - name: Run syntax tests (${{ matrix.build }})
         uses: SublimeText/syntax-test-action@v2
