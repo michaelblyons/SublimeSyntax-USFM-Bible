@@ -133,7 +133,7 @@ footnote-translation
   ;
 footnote-text
   : `\ft`{keyword.other}
-    '[^\\]+'{string.unquoted}
+    '[^\\]+'{string.unquoted} *
     ~'(?=\\e?f)'
   ;
 
