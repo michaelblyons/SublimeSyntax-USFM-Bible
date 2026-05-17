@@ -2,10 +2,6 @@ name: Build
 on:
   workflow_call:
 
-env:
-  PKG_NAME: 'USFM Bible'
-  PKG_FILE: 'USFM Bible.sublime-package'
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,12 +16,15 @@ jobs:
       - name: Compile SBNF syntax
         run: sbnf usfm.sbnf
 
-      - name: Create ST package
-        run: zip '${{ env.PKG_FILE }}' *.md *.tmPreferences *.sublime-syntax tests/**
-
-      - name: Upload ST package
+      - name: Upload sublime-package
         uses: actions/upload-artifact@v7
         with:
-          path: ${{ env.PKG_FILE }}
-          archive: false
           if-no-files-found: error
+          name: 'sublime-package.zip'
+          path: |
+            messages/**
+            tests/**
+            messages.json
+            *.md
+            *.tmPreferences
+            *.sublime-syntax

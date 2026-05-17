@@ -18,7 +18,6 @@ on:
 
 env:
   PKG_NAME: 'USFM Bible'
-  PKG_FILE: 'USFM Bible.sublime-package'
 
 jobs:
   build:
@@ -40,8 +39,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with:
-          name: ${{ env.PKG_FILE }}
-      - run: unzip '${{ env.PKG_FILE }}'
+          name: 'sublime-package.zip'
 
       - name: Run syntax tests (${{ matrix.build }})
         uses: SublimeText/syntax-test-action@v2
@@ -56,10 +54,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with:
-          name: ${{ env.PKG_FILE }}
-      - run: |
-          unzip '${{ env.PKG_FILE }}'
-          rm '${{ env.PKG_FILE }}'
+          name: 'sublime-package.zip'
 
       - name: Review artifact for Package Control
         uses: kaste/st_package_reviewer/gh_action_package@ad89510c574e97d92cfd4d9e0f5c9029394f5c94
