@@ -1,0 +1,194 @@
+# https://github.com/BenjaminSchaaf/sbnf
+# https://docs.usfm.bible
+
+NAME = `USFM Bible`
+SCOPE = `text.usfm`
+SCOPE_POSTFIX = `usfm`
+EXTENSIONS = `usfm`
+
+prototype : ( ~comment )* ;
+main : ~( chapters | paragraphs ) ;
+
+
+###[ CHAPTERS & VERSES ]#######################################################
+
+chapters{meta.toc-list.chapter}
+  : '\\c([ap]?)'{keyword.declaration.chapter, 1:storage.modifier}
+    whole-number
+  ;
+
+verses
+  : '\\v([ap]?)'{punctuation.definition.verse.begin, 1:storage.modifier}
+    number-or-range
+  ;
+
+
+###[ PARAGRAPHS ]##############################################################
+
+# https://docs.usfm.bible/usfm/3.1/para/index.html
+paragraphs : titles-and-sections | body-paragraphs;
+
+titles-and-sections : section-1 | section-2 | parallel-references ;
+
+section-1{markup.heading.1}
+  : `\s1`{punctuation.definition.heading.1}
+    TEXT_UNTIL_EOL{entity.name.section}
+    ~newline
+  ;
+section-2{markup.heading.2}
+  : `\s2`{punctuation.definition.heading.2}
+    TEXT_UNTIL_EOL{entity.name.section}
+    ~newline
+  ;
+parallel-references{comment.line.reference}
+  : `\r`{keyword.other.reference}
+    ~newline
+  ;
+
+body-paragraphs : ( paragraph | poetry | list | text )* ;
+paragraph
+  : '\\p\b'{punctuation.section.block.begin}
+  | `\m` # margin
+  | `\po` # letter opening
+  | `\cls` # letter closing
+  | '\\p(r|c)'{punctuation.section.block.begin, 1:markup.alignment}
+  | '\\pm[ocr]' # embedded paragraph
+  | '\\p(i[1-9])'{punctuation.section.block.begin, 1:markup.indentation}
+  | '\\m(i[1-9])'{punctuation.section.block.begin, 1:markup.indentation}
+  | `\lit` # liturgical note
+  | `\nb` # no break
+  | `\b`{constant.character.newline}
+  ;
+
+# TODO: Move text context
+text : ( verses | characters | notes )* ;
+
+# https://docs.usfm.bible/usfm/3.1.1/para/poetry/index.html
+poetry{markup.quote}
+  : '\\q[1-4rcad]'{punctuation.definition.blockquote}
+    ~text
+    ~newline
+  | '\\qm[1-4]'{punctuation.definition.blockquote}
+    ~text
+    ~newline
+  | `\b`{constant.character.newline}
+  ;
+
+list : '\\lim?[1-4]'{markup.list punctuation.definition.list_item};
+
+
+###[ CHARACTERS ]##############################################################
+
+# https://docs.usfm.bible/usfm/3.1/char/index.html
+characters : char-name-of-god ;
+
+char-name-of-god{constant.other.placeholder}
+  : `\nd`{punctuation.definition.placholder.begin}
+    ~`\nd*`{punctuation.definition.placholder.end}
+  | `\+nd`{punctuation.definition.placholder.begin}
+    ~`\+nd*`{punctuation.definition.placholder.end}
+  ;
+
+
+###[ NOTES ]###################################################################
+
+# https://docs.usfm.bible/usfm/3.1/note/index.html
+notes : footnote ;
+
+footnote{markup.info.footnote}
+  : '\\f\b'{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`\f*`{punctuation.definition.annotation.end}
+  | '\\ef\b'{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`\ef*`{punctuation.definition.annotation.end}
+  | `\fe`{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`fe`{punctuation.definition.annotation.end}
+  | `\efe`{punctuation.definition.annotation.begin}
+      footnote-content
+    ~`\efe*`{punctuation.definition.annotation.end}
+  ;
+footnote-content{markup.info.footnote}
+  : footnote-caller?
+    ( footnote-reference
+    | footnote-translation
+    # | footnote-keyword
+    # | footnote-label
+    # | footnote-witness
+    # | footnote-paragraph
+    # | footnote-verse-number
+    | footnote-text
+    # | footnote-dc
+    # | footnote-refmark
+    )*
+  ;
+footnote-caller : '[?+-]'{storage.modifier} ;
+footnote-reference
+  : `\fr`{keyword.other}
+    reference
+    ':'{punctuation.separator.key-value} ?
+  ;
+footnote-translation
+  : '\\fqa?'{keyword.other}
+    footnote-translation-content*
+    ~'(?=\\e?f)'
+  ;
+footnote-translation-content{string.unquoted markup.italic.quote}
+  : characters
+  | '[^\\]+'
+  ;
+footnote-text
+  : `\ft`{keyword.other}
+    '[^\\]+'{string.unquoted} *
+    ~'(?=\\e?f)'
+  ;
+
+
+###[ COMMENTS ]################################################################
+
+# Special-case a User Extension to define comments for unit tests
+
+comment : line-comment ;
+line-comment{comment.line.user-extension}
+  : '^\\z#'{punctuation.definition.comment.begin}
+    ~newline
+  ;
+
+
+###[ UTILITY ]#################################################################
+
+reference : whole-number '[:.]'{punctuation.separator} number-or-range ;
+number-or-range : wholenum-or-zero ( `-`{punctuation.separator.range} whole-number )? ;
+whole-number : '[1-9][0-9]*\b'{meta.number.integer.decimal constant.numeric.value} ;
+wholenum-or-zero : '[0-9]+\b'{meta.number.integer.decimal constant.numeric.value} ;
+
+newline : '$\n?'{meta.whitespace.newline} ;
+
+book-identifier
+  # Old Testament
+  : `GEN` | `EXO` | `LEV` | `NUM` | `DEU` | `JOS` | `JDG` | `RUT` | `1SA`
+  | `2SA` | `1KI` | `2KI` | `1CH` | `2CH` | `EZR` | `NEH` | `EST` | `JOB`
+  | `PSA` | `PRO` | `ECC` | `SNG` | `ISA` | `JER` | `LAM` | `EZK` | `DAN`
+  | `HOS` | `JOL` | `AMO` | `OBA` | `JON` | `MIC` | `NAM` | `HAB` | `ZEP`
+  | `HAG` | `ZEC` | `MAL`
+  # New Testament
+  | `MAT` | `MRK` | `LUK` | `JHN` | `ACT` | `ROM` | `1CO` | `2CO` | `GAL`
+  | `EPH` | `PHP` | `COL` | `1TH` | `2TH` | `1TI` | `2TI` | `TIT` | `PHM`
+  | `HEB` | `JAS` | `1PE` | `2PE` | `1JN` | `2JN` | `3JN` | `JUD` | `REV`
+  # A1
+  | `TOB` | `JDT` | `ESG` | `WIS` | `SIR` | `BAR` | `LJE` | `S3Y` | `SUS`
+  | `BEL` | `1MA` | `2MA` | `3MA` | `4MA` | `1ES` | `2ES` | `MAN` | `PS2`
+  | `ODA` | `PSS`
+  # Ezra's Apocalypse
+  | `EZA` | `5EZ` | `6EZ`
+  # Greek, Ethiopian, and Syriac material
+  | `DAG` | `PS3` | `2BA` | `LBA` | `JUB` | `ENO` | `1MQ` | `2MQ`
+  | `3MQ` | `REP` | `4BA` | `LAO`
+  # Meta sections
+  | `FRT` | `BAK` | `OTH` | `INT` | `CNC` | `GLO` | `TDX` | `NDX`
+  # Extra material
+  | 'XX[A-G]'
+  ;
+
+TEXT_UNTIL_EOL = '\S[\s\S]*?(?=\s*$)'

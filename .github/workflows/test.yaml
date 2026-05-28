@@ -1,0 +1,63 @@
+name: Test
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/build.yaml'
+      - '**.sublime-syntax'
+      - '**/syntax_test_*'
+      - '**.tmPreferences'
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '.github/workflows/build.yaml'
+      - '**.sublime-syntax'
+      - '**/syntax_test_*'
+      - '**.tmPreferences'
+  workflow_dispatch:
+
+env:
+  PKG_NAME: 'USFM Bible'
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+
+  syntax-tests:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - build: 'latest'
+          - build: 'stable'
+          - build: 4077  # `version: 2` support
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: 'sublime-package.zip'
+
+      - name: Run syntax tests (${{ matrix.build }})
+        uses: SublimeText/syntax-test-action@v2
+        with:
+          build: ${{ matrix.build }}
+          package_name: ${{ env.PKG_NAME }}
+
+  package-review:
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: 'sublime-package.zip'
+
+      - name: Review artifact for Package Control
+        uses: kaste/st_package_reviewer/gh_action_package@v1
+        with:
+          package-name: ${{ env.PKG_NAME }}
+          repo: ''

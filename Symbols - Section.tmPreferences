@@ -5,14 +5,17 @@
     <key>name</key>
     <string>USFM - Sections</string>
     <key>scope</key>
-    <string>text.usfm markup.heading</string>
+    <string>text.usfm markup.heading - meta.whitespace.newline</string>
     <key>settings</key>
     <dict>
         <key>showInSymbolList</key>
         <integer>1</integer>
         <key>symbolTransformation</key>
         <string>
-        s/(?:\\s\d*) (.*)/  $1/g;
+        s/(?:\\s1) (.*)/  $1/g;
+        s/(?:\\s2) (.*)/    $1/g;
+        s/(?:\\s3) (.*)/      $1/g;
+        s/(?:\\s[4-9]) (.*)/        $1/g;
         </string>
     </dict>
 </dict>

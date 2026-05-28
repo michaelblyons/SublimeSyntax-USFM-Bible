@@ -1,0 +1,34 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+env:
+  PKG_NAME: 'USFM Bible'
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yaml
+
+  push:
+    name: Build sublime-package
+    needs: build
+    if: ${{ needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: 'sublime-package.zip'
+          skip-decompress: true
+
+      - name: Upload sublime-package to release
+        run: |
+          PKG="${{ env.PKG_NAME }}.sublime-package"
+          mv sublime-package.zip "$PKG"
+          gh release upload "${{ github.event.release.tag_name }}" "$PKG" --clobber --repo "${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

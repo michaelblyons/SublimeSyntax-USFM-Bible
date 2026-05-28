@@ -1,0 +1,30 @@
+name: Build
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install SBNF
+        uses: baptiste0928/cargo-install@v3.4.0
+        with:
+          crate: sbnfc
+
+      - name: Compile SBNF syntax
+        run: sbnf usfm.sbnf
+
+      - name: Upload sublime-package
+        uses: actions/upload-artifact@v7
+        with:
+          if-no-files-found: error
+          name: 'sublime-package.zip'
+          path: |
+            messages/**
+            tests/**
+            messages.json
+            *.md
+            *.tmPreferences
+            *.sublime-syntax
